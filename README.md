@@ -1,11 +1,19 @@
 # Trash Dump Detection - Web Application
 
+## Pengembangan Awal Model Klasifikasi Sampah Berbasis YOLOv8 dan Faster R-CNN untuk Mitigasi Banjir di Jakarta
+- Botol
+- Kertas
+- Plastik
+- Organik
+- Logam
+- Kaca
+
 A Flask web application for testing the trained YOLOv8 classification model that detects trash dumps in images.
 
 ## Features
 
 - 🖼️ **Image Upload**: Support for multiple image formats (PNG, JPG, JPEG, GIF, BMP, TIFF, WEBP, HEIC)
-- 🎯 **Real-time Prediction**: Instant classification of images as "garbage" or "clean"
+- 🎯 **Real-time Prediction**: Instant multi-class classification across kategori sampah (Botol, Kertas, Plastik, Organik, Logam, Kaca)
 - 📊 **Confidence Scores**: Display prediction confidence and all class probabilities
 - 🎨 **Modern UI**: Beautiful, responsive web interface with drag-and-drop functionality
 - 📱 **Mobile Friendly**: Works on desktop and mobile devices
@@ -59,9 +67,13 @@ trash-dump-detection/
 ## Model Information
 
 - **Model Type**: YOLOv8 Classification
-- **Classes**: 
-  - `garbage`: Images containing trash dumps
-  - `clean`: Images of clean areas
+- **Classes**:
+  - `Botol`
+  - `Kertas`
+  - `Plastik`
+  - `Organik`
+  - `Logam`
+  - `Kaca`
 - **Input Size**: 224x224 pixels
 - **Max File Size**: 16MB
 

@@ -285,12 +285,14 @@
         const imageContainer = document.getElementById('imageContainer');
         const uploadedImage = document.getElementById('uploadedImage');
 
-        const classification = [
-            "Plastik",
-            "Organik",
-            "Logam",
-            "Residu"
-        ]
+        const classThemes = {
+            "Botol": { emoji: "🧴", label: "Botol Terdeteksi", color: "#2196F3" },
+            "Kertas": { emoji: "📄", label: "Kertas Terdeteksi", color: "#795548" },
+            "Plastik": { emoji: "🛍️", label: "Plastik Terdeteksi", color: "#FF9800" },
+            "Organik": { emoji: "🍃", label: "Organik Terdeteksi", color: "#4CAF50" },
+            "Logam": { emoji: "🔩", label: "Logam Terdeteksi", color: "#9E9E9E" },
+            "Kaca": { emoji: "🪟", label: "Kaca Terdeteksi", color: "#00BCD4" }
+        };
 
         // Drag and drop functionality
         uploadArea.addEventListener('dragover', (e) => {
@@ -379,13 +381,13 @@
         function showResult(prediction, imageBase64) {
             const confidence = (prediction.confidence * 100).toFixed(1);
             const predictedClass = prediction.predicted_class;
-            const emoji = predictedClass === 'garbage' ? '🗑️' : '✨';
-            const classDisplay = predictedClass === 'garbage' ? 'Sampah Terdeteksi' : 'Area Bersih';
-            
-            // Set color scheme based on prediction
-            const resultClass = predictedClass === 'garbage' ? 'result-garbage' : 'result-clean';
-            resultContainer.className = `result-container ${resultClass}`;
+            const theme = classThemes[predictedClass] || { emoji: "🔎", label: predictedClass, color: "#667eea" };
+            const allPredictions = Array.isArray(prediction.all_predictions) ? prediction.all_predictions : [];
+
+            resultContainer.className = 'result-container';
+            resultContainer.style.borderColor = theme.color;
             resultContainer.style.display = 'block';
+            resultContainer.style.color = '#333';
 
             // Display uploaded image if available
             if (imageBase64) {
@@ -394,36 +396,31 @@
             }
 
             // Set confidence bar color based on prediction
-            const confidenceColor = predictedClass === 'garbage' ? '#FF9800' : '#4CAF50';
+            const confidenceColor = theme.color;
             
             resultContent.innerHTML = `
                 <div class="prediction-card">
                     <div class="prediction-title">
-                        ${emoji} ${classDisplay}
+                        ${theme.emoji} ${theme.label}
                     </div>
                     <div class="confidence-bar">
                         <div class="confidence-fill" style="width: ${confidence}%; background-color: ${confidenceColor};"></div>
                     </div>
                     <div>Tingkat Kepercayaan: ${confidence}%</div>
                 </div>
+                ${allPredictions.length ? `
                 <div class="all-predictions">
                     <h3>Semua Prediksi:</h3>
-                    ${prediction.all_predictions.map(pred => `
+                    ${allPredictions.map(pred => {
+                        const predTheme = classThemes[pred.class] || { emoji: "🔹" };
+                        return `
                         <div class="prediction-item">
-                            <span>${pred.class === 'garbage' ? '🗑️ Sampah' : '✨ Bersih'}</span>
-                            <span>${(pred.confidence * 100).toFixed(1)}%</span>
+                            <span>${predTheme.emoji} ${pred.class}</span>
+                            <span>${(pred.confidence * 100).toFixed(2)}%</span>
                         </div>
-                    `).join('')}
-                </div>
-                <div class="all-predictions">
-                    <h3>Klasifikasi:</h3>
-                    ${classification.map(cls => `
-                        <div class="prediction-item">
-                            <span>${cls}</span>
-                            <span>%</span>
-                        </div>
-                    `).join('')}
-                </div>
+                        `;
+                    }).join('')}
+                </div>` : ''}
             `;
         }
 
