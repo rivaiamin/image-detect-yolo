@@ -21,3 +21,7 @@ run:
 
 train:
 	python main.py
+
+resume:
+	@echo "Resuming from last checkpoint..."
+	python main.py --resume runs/detect/train/weights/last.pt
