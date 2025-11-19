@@ -111,12 +111,18 @@ def main():
     print(f"   Image size: {args.imgsz}")
     print(f"   Batch size: {args.batch}")
     
-    model.train(
-        data=str(project_root / "dataset" / "data.yaml"),  # absolute path to your dataset YAML config file
-        epochs=args.epochs,
-        imgsz=args.imgsz,
-        batch=args.batch
-    )
+    train_kwargs = {
+        'data': str(project_root / "dataset" / "data.yaml"),  # absolute path to your dataset YAML config file
+        'epochs': args.epochs,
+        'imgsz': args.imgsz,
+        'batch': args.batch
+    }
+    
+    # If resuming, pass resume=True to continue from the checkpoint
+    if args.resume:
+        train_kwargs['resume'] = True
+    
+    model.train(**train_kwargs)
     
     # 3. Validate the trained model
     print("📊 Validating model...")
